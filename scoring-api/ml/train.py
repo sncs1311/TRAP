@@ -132,7 +132,8 @@ def main(cards: int, seed: int) -> None:
           + "  ".join(f"{k}={v:.2f}" for k, v in lat.items()))
 
     print("[6/6] Saving artifacts ...")
-    model.get_booster().save_model(str(ARTIFACTS / "model.json"))
+    booster = model.get_booster()[: model.best_iteration + 1]   # drop early-stopping tail trees
+    booster.save_model(str(ARTIFACTS / "model.json"))
     ref_df = tr.copy()
     psi_reference = {f: build_reference(ref_df[f].to_numpy(np.float64)) for f in PSI_FEATURES}
     psi_reference["score"] = build_reference(pva.astype(np.float64))
