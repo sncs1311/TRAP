@@ -57,3 +57,72 @@ class Database:
 
     def close(self) -> None:
         self.pool.close()
+
+    def recent_transactions(self, limit: int) -> list[dict]:
+        with self.pool.connection() as conn:
+            return conn.execute(
+                """SELECT txn_id, card_id, ts_ms, amount, score, decision, latency_ms,
+                          source, true_label, pattern, scored_at
+                   FROM transactions ORDER BY scored_at DESC LIMIT %s""",
+                (limit,)).fetchall()
+
+    def list_alerts(self, status: str, limit: int) -> list[dict]:
+        where, params = "", []
+        if status != "all":
+            where = "WHERE a.status = %s"
+            params.append(status)
+        params.append(limit)
+        with self.pool.connection() as conn:
+            return conn.execute(
+                f"""SELECT a.alert_id, a.txn_id, a.card_id, a.score, a.decision, a.reasons,
+                           a.shap, a.status, a.created_at,
+                           t.amount, t.ts_ms, t.pattern, t.true_label, t.latency_ms
+                    FROM fraud_alerts a JOIN transactions t ON t.txn_id = a.txn_id
+                    {where}
+                    ORDER BY a.created_at DESC LIMIT %s""",
+                params).fetchall()
+
+    def add_feedback(self, txn_id: str, label: str, analyst: str, note: str | None) -> dict | None:
+        status = "confirmed_fraud" if label == "fraud" else "false_positive"
+        with self.pool.connection() as conn, conn.cursor() as cur:
+            cur.execute("SELECT 1 FROM transactions WHERE txn_id = %s", (txn_id,))
+            if cur.fetchone() is None:
+                return None
+            cur.execute(
+                """INSERT INTO analyst_feedback (txn_id, label, analyst, note)
+                   VALUES (%s, %s, %s, %s) RETURNING feedback_id""",
+                (txn_id, label, analyst, note))
+            feedback_id = cur.fetchone()["feedback_id"]
+            cur.execute("UPDATE fraud_alerts SET status = %s WHERE txn_id = %s", (status, txn_id))
+            updated = cur.rowcount == 1
+        return {"feedback_id": feedback_id, "txn_id": txn_id, "label": label,
+                "alert_status": status if updated else None, "alert_updated": updated}
+
+    def stats(self) -> dict:
+        with self.pool.connection() as conn:
+            alerts = conn.execute(
+                "SELECT status, count(*) AS n FROM fraud_alerts GROUP BY status").fetchall()
+            recent = conn.execute(
+                """SELECT decision, count(*) AS n FROM transactions
+                   WHERE scored_at > now() - interval '60 seconds' GROUP BY decision""").fetchall()
+        by_status = {r["status"]: r["n"] for r in alerts}
+        by_decision = {r["decision"]: r["n"] for r in recent}
+        reviewed = by_status.get("confirmed_fraud", 0) + by_status.get("false_positive", 0)
+        return {
+            "alerts": {"open": by_status.get("open", 0),
+                       "confirmed_fraud": by_status.get("confirmed_fraud", 0),
+                       "false_positive": by_status.get("false_positive", 0)},
+            "analyst_precision": (by_status.get("confirmed_fraud", 0) / reviewed) if reviewed else None,
+            "last_60s": {"approve": by_decision.get("approve", 0),
+                         "review": by_decision.get("review", 0),
+                         "decline": by_decision.get("decline", 0),
+                         "total": sum(by_decision.values())},
+        }
+
+    def psi_history(self, feature: str, minutes: int) -> list[dict]:
+        with self.pool.connection() as conn:
+            return conn.execute(
+                """SELECT captured_at, psi, status, n_samples FROM psi_snapshots
+                   WHERE feature = %s AND captured_at > now() - %s::int * interval '1 minute'
+                   ORDER BY captured_at ASC""",
+                (feature, minutes)).fetchall()

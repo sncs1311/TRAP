@@ -2,16 +2,18 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from typing import Literal
 
 import numpy as np
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
 from app.config import settings
 from app.db import Database
 from app.engine import build_engine
 from app.events import Transaction
-from app.schema import FEATURE_NAMES
+from app.schema import FEATURE_NAMES, PSI_FEATURES
 
 
 @asynccontextmanager
@@ -90,3 +92,40 @@ def health():
     eng = app.state.engine
     return {"status": "ok", "redis": bool(eng.r.ping()), "postgres": app.state.db.ping(),
             "model_version": eng.model.version}
+
+# ---------- analyst console endpoints ----------
+class FeedbackReq(BaseModel):
+    label: Literal["fraud", "false_positive"]
+    analyst: str = Field("analyst", max_length=64)
+    note: str | None = Field(None, max_length=500)
+
+
+@app.get("/transactions")
+def transactions(limit: int = Query(50, ge=1, le=200)):
+    return {"items": app.state.db.recent_transactions(limit)}
+
+
+@app.get("/alerts")
+def alerts(status: Literal["open", "confirmed_fraud", "false_positive", "all"] = "open",
+           limit: int = Query(50, ge=1, le=200)):
+    return {"items": app.state.db.list_alerts(status, limit)}
+
+
+@app.post("/alerts/{txn_id}/feedback")
+def alert_feedback(txn_id: str, req: FeedbackReq):
+    out = app.state.db.add_feedback(txn_id, req.label, req.analyst, req.note)
+    if out is None:
+        raise HTTPException(404, "transaction not found")
+    return out
+
+
+@app.get("/stats")
+def stats():
+    return app.state.db.stats()
+
+
+@app.get("/drift/history")
+def drift_history(feature: str = "__overall__", minutes: int = Query(30, ge=1, le=240)):
+    if feature not in {*PSI_FEATURES, "score", "__overall__"}:
+        raise HTTPException(400, f"unknown feature '{feature}'")
+    return {"feature": feature, "points": app.state.db.psi_history(feature, minutes)}
