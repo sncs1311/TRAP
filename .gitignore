@@ -7,3 +7,4 @@ node_modules/
 .next/
 scoring-api/data/
 scoring-api/artifacts/*.png
+simulator/data/
