@@ -1,0 +1,336 @@
+[
+  {
+    "env": {
+      "date": "2026-11-19T13:54:38+00:00",
+      "python": "3.11.8",
+      "os": "Windows-10-10.0.26200-SP0",
+      "cpu": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+      "logical_cpus": 24,
+      "note": "load generator, API, worker, Redis and Postgres (Docker) all on one machine"
+    },
+    "params": {
+      "quick": true,
+      "keep": false,
+      "n": 1000,
+      "stream_n": 5000,
+      "repeats": 1,
+      "probe_seconds": 6,
+      "levels": "",
+      "sections": "score,conc,stream,e2e"
+    },
+    "score": {
+      "normal traffic": {
+        "client_ms": {
+          "n": 1000,
+          "mean": 11.3,
+          "p50": 6.79,
+          "p95": 32.72,
+          "p99": 40.27,
+          "max": 51.44
+        },
+        "server_ms": {
+          "n": 1000,
+          "mean": 2.89,
+          "p50": 2.74,
+          "p95": 3.58,
+          "p99": 4.42,
+          "max": 31.81
+        },
+        "flagged_pct": 0.0
+      },
+      "high-risk (SHAP path)": {
+        "client_ms": {
+          "n": 200,
+          "mean": 17.06,
+          "p50": 9.03,
+          "p95": 63.74,
+          "p99": 67.25,
+          "max": 71.24
+        },
+        "server_ms": {
+          "n": 200,
+          "mean": 5.03,
+          "p50": 4.93,
+          "p95": 6.08,
+          "p99": 6.79,
+          "max": 8.63
+        },
+        "flagged_pct": 100.0
+      }
+    },
+    "concurrency": [
+      {
+        "clients": 4,
+        "completed": 1000,
+        "errors": 0,
+        "rps": 88.1,
+        "client_ms": {
+          "n": 1000,
+          "mean": 45.31,
+          "p50": 44.98,
+          "p95": 62.73,
+          "p99": 67.84,
+          "max": 73.98
+        }
+      },
+      {
+        "clients": 16,
+        "completed": 992,
+        "errors": 0,
+        "rps": 85.0,
+        "client_ms": {
+          "n": 992,
+          "mean": 186.87,
+          "p50": 188.82,
+          "p95": 204.29,
+          "p99": 211.59,
+          "max": 223.67
+        }
+      }
+    ],
+    "stream": {
+      "runs": [
+        {
+          "events": 5000,
+          "seconds": 6.71,
+          "eps": 745,
+          "enqueue_seconds": 0.16
+        }
+      ],
+      "median_eps": 745,
+      "min_eps": 745,
+      "max_eps": 745
+    },
+    "e2e": [
+      {
+        "offered_eps": 0,
+        "achieved_eps": 0,
+        "probes": {
+          "n": 30,
+          "mean": 100.8,
+          "p50": 98.71,
+          "p95": 114.91,
+          "p99": 126.84,
+          "max": 126.84
+        },
+        "timeouts": 0,
+        "utilization": "0%"
+      },
+      {
+        "offered_eps": 190,
+        "achieved_eps": 190,
+        "probes": {
+          "n": 29,
+          "mean": 111.47,
+          "p50": 104.54,
+          "p95": 145.72,
+          "p99": 213.17,
+          "max": 213.17
+        },
+        "timeouts": 0,
+        "utilization": "26%"
+      },
+      {
+        "offered_eps": 370,
+        "achieved_eps": 372,
+        "probes": {
+          "n": 28,
+          "mean": 117.52,
+          "p50": 113.51,
+          "p95": 130.91,
+          "p99": 183.44,
+          "max": 183.44
+        },
+        "timeouts": 0,
+        "utilization": "50%"
+      },
+      {
+        "offered_eps": 600,
+        "achieved_eps": 601,
+        "probes": {
+          "n": 27,
+          "mean": 124.85,
+          "p50": 125.08,
+          "p95": 137.14,
+          "p99": 146.47,
+          "max": 146.47
+        },
+        "timeouts": 0,
+        "utilization": "81%"
+      }
+    ]
+  },
+  {
+    "env": {
+      "date": "2026-11-19T13:58:03+00:00",
+      "python": "3.11.8",
+      "os": "Windows-10-10.0.26200-SP0",
+      "cpu": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+      "logical_cpus": 24,
+      "note": "load generator, API, worker, Redis and Postgres (Docker) all on one machine"
+    },
+    "params": {
+      "quick": false,
+      "keep": false,
+      "n": 5000,
+      "stream_n": 20000,
+      "repeats": 3,
+      "probe_seconds": 12,
+      "levels": "",
+      "sections": "score,conc,stream,e2e"
+    },
+    "score": {
+      "normal traffic": {
+        "client_ms": {
+          "n": 5000,
+          "mean": 11.47,
+          "p50": 6.73,
+          "p95": 30.51,
+          "p99": 45.61,
+          "max": 114.2
+        },
+        "server_ms": {
+          "n": 5000,
+          "mean": 3.01,
+          "p50": 2.81,
+          "p95": 3.64,
+          "p99": 4.83,
+          "max": 77.57
+        },
+        "flagged_pct": 0.0
+      },
+      "high-risk (SHAP path)": {
+        "client_ms": {
+          "n": 1000,
+          "mean": 17.11,
+          "p50": 8.94,
+          "p95": 51.89,
+          "p99": 67.36,
+          "max": 118.7
+        },
+        "server_ms": {
+          "n": 1000,
+          "mean": 5.19,
+          "p50": 5.02,
+          "p95": 6.08,
+          "p99": 6.89,
+          "max": 22.61
+        },
+        "flagged_pct": 100.0
+      }
+    },
+    "concurrency": [
+      {
+        "clients": 4,
+        "completed": 4000,
+        "errors": 0,
+        "rps": 86.4,
+        "client_ms": {
+          "n": 4000,
+          "mean": 46.22,
+          "p50": 46.25,
+          "p95": 69.71,
+          "p99": 79.46,
+          "max": 129.59
+        }
+      },
+      {
+        "clients": 16,
+        "completed": 4000,
+        "errors": 0,
+        "rps": 86.5,
+        "client_ms": {
+          "n": 4000,
+          "mean": 184.65,
+          "p50": 183.62,
+          "p95": 197.7,
+          "p99": 212.78,
+          "max": 254.02
+        }
+      }
+    ],
+    "stream": {
+      "runs": [
+        {
+          "events": 20000,
+          "seconds": 24.55,
+          "eps": 815,
+          "enqueue_seconds": 0.44
+        },
+        {
+          "events": 20000,
+          "seconds": 23.37,
+          "eps": 856,
+          "enqueue_seconds": 0.42
+        },
+        {
+          "events": 20000,
+          "seconds": 23.71,
+          "eps": 844,
+          "enqueue_seconds": 0.46
+        }
+      ],
+      "median_eps": 844,
+      "min_eps": 815,
+      "max_eps": 856
+    },
+    "e2e": [
+      {
+        "offered_eps": 0,
+        "achieved_eps": 0,
+        "probes": {
+          "n": 61,
+          "mean": 98.99,
+          "p50": 98.06,
+          "p95": 107.85,
+          "p99": 119.6,
+          "max": 119.6
+        },
+        "timeouts": 0,
+        "utilization": "0%"
+      },
+      {
+        "offered_eps": 210,
+        "achieved_eps": 210,
+        "probes": {
+          "n": 57,
+          "mean": 111.49,
+          "p50": 107.49,
+          "p95": 134.45,
+          "p99": 202.18,
+          "max": 202.18
+        },
+        "timeouts": 0,
+        "utilization": "25%"
+      },
+      {
+        "offered_eps": 420,
+        "achieved_eps": 420,
+        "probes": {
+          "n": 56,
+          "mean": 115.69,
+          "p50": 113.05,
+          "p95": 129.86,
+          "p99": 210.32,
+          "max": 210.32
+        },
+        "timeouts": 0,
+        "utilization": "50%"
+      },
+      {
+        "offered_eps": 680,
+        "achieved_eps": 681,
+        "probes": {
+          "n": 50,
+          "mean": 140.35,
+          "p50": 126.44,
+          "p95": 233.8,
+          "p99": 263.86,
+          "max": 263.86
+        },
+        "timeouts": 0,
+        "utilization": "81%"
+      }
+    ]
+  }
+]
