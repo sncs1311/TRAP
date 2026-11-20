@@ -50,7 +50,7 @@ async def lifespan(app: FastAPI):
     r.close()
 
 
-app = FastAPI(title="SentinelStream Simulator", version="0.3.0", lifespan=lifespan)
+app = FastAPI(title="TRAP Simulator", version="0.3.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=list(settings.cors_origins),
                    allow_methods=["*"], allow_headers=["*"])
 

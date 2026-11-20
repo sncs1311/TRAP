@@ -1,7 +1,8 @@
+name: trap
 services:
   redis:
     image: redis:7-alpine
-    container_name: sentinel-redis
+    container_name: trap-redis
     # noeviction: Streams + feature windows must never be silently evicted
     command: ["redis-server", "--appendonly", "yes", "--maxmemory", "512mb", "--maxmemory-policy", "noeviction"]
     ports:
@@ -16,18 +17,18 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: sentinel-postgres
+    container_name: trap-postgres
     environment:
-      POSTGRES_USER: sentinel
-      POSTGRES_PASSWORD: sentinel
-      POSTGRES_DB: sentinelstream
+      POSTGRES_USER: trap
+      POSTGRES_PASSWORD: trap
+      POSTGRES_DB: trap
     ports:
       - "5433:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
       - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sentinel -d sentinelstream"]
+      test: ["CMD-SHELL", "pg_isready -U trap -d trap"]
       interval: 5s
       timeout: 3s
       retries: 10

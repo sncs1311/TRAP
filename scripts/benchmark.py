@@ -1,4 +1,4 @@
-r"""SentinelStream benchmark.
+r"""TRAP benchmark.
 
 Run with the scoring-api venv (it has redis + psycopg):
     scoring-api\.venv\Scripts\python scripts\benchmark.py --quick
@@ -31,7 +31,7 @@ API_HOST, API_PORT = "127.0.0.1", 8010
 API = f"http://{API_HOST}:{API_PORT}"
 SIM = "http://127.0.0.1:4010"
 REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
-DB_URL = os.getenv("DATABASE_URL", "postgresql://sentinel:sentinel@127.0.0.1:5433/sentinelstream")
+DB_URL = os.getenv("DATABASE_URL", "postgresql://trap:trap@127.0.0.1:5433/trap")
 STREAM, GROUP = "txn:events", "scorers"
 DOCS = Path(__file__).resolve().parents[1] / "docs"
 RUN = uuid.uuid4().hex[:6]

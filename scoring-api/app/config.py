@@ -20,7 +20,7 @@ def _f(k: str, d: float) -> float:
 class Settings:
     redis_url: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     database_url: str = os.getenv(
-        "DATABASE_URL", "postgresql://sentinel:sentinel@localhost:5433/sentinelstream")
+        "DATABASE_URL", "postgresql://trap:trap@127.0.0.1:5433/trap")
     model_path: Path = BASE / "artifacts" / "model.json"
     meta_path: Path = BASE / "artifacts" / "metadata.json"
 
