@@ -1,6 +1,6 @@
 # TRAP: Transaction Risk & Anomaly Pipeline
 
-Real-time card-fraud scoring with streaming velocity features, explainable decisions, and live data-drift monitoring, built from scratch.
+Real-time card-fraud scoring with streaming velocity features, explainable decisions, and live data-drift monitoring.
 
 ![dashboard](docs/dashboard.png)
 
